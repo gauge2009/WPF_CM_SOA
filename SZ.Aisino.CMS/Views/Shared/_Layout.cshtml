@@ -28,54 +28,18 @@
 
 </head>
 <body id="center">
-
-    @Html.Partial("Header")
-
-    @*@Html.Partial("Navigation")*@
-
-    @RenderSection("Navigation", required: false)
-
-    @*<div id="abs" class="mainContainer">
-        <div class="mainContent">
-          
-             
-          
-
-        </div>
-    </div>*@
-
-    <div class="content">
-        <ol class="breadcrumb col-lg-12">
-            <li><span class="glyphicon glyphicon-home"></span>&nbsp;当前位置</li>
-            @Html.Partial("BreadCrumb")
-        </ol>
-
+     <div class="content">
+ 
         <div class="bodyContainer clearfix col-lg-12" style="margin-left:-15px;margin-top:-25px">
             @RenderBody()
         </div>
-        
-
-        
-         @RenderSection("links", required: false)
-
-         
-        
-    </div>
-
-    @*<div class="gotop">
-            <a href="javascript:void(0)" onclick="window.scrollTo(0, 0);"><span class="glyphicon glyphicon-circle-arrow-up"></span></a>
-        </div>
-        <div class="sidebarCloser">
-            <a href="javascript:void(0)">
-                <span class="glyphicon glyphicon-transfer"></span>
-            </a>
-        </div>*@
+     </div>
+ 
 
     @RenderSection("prescripts", required: false)
     @Scripts.Render("~/bundles/common")
-    @*@Scripts.Render("~/bundles/cms")*@
-
-    @RenderSection("scripts", required: false)
+ 
+    @RenderSection("scripts", required: true)
 
 
 
@@ -131,63 +95,8 @@
 
         });
 
-
-    </script>
-    <script type="text/javascript">
-        //设置
-        myFocus.set({
-            id: 'myFocus',
-            pattern: 'mF_51xflash'
-        });
-    </script>
-
+     </script>
+ 
 </body>
 
-@*<body id="center" class="gtm">
-        <div id="base">
-            @Html.Partial("Header")
-
-
-
-            <div id="abs" class="mainContainer">
-                 <div class="mainContent">
-                    <ol class="breadcrumb">
-                        <li><span class="glyphicon glyphicon-home"></span>&nbsp;当前位置</li>
-                        @Html.Partial("BreadCrumb")
-                    </ol>
-
-                     <div class="bodyContainer clearfix col-lg-9" style="margin-left:-25px">
-                         @RenderBody()
-                     </div>
-                     <div class="clearfix col-lg-3" >
-                         @Html.Partial("SliderRight")
-                     </div>
-                     <footer class="col-lg-12">
-                         <div class="center-block">
-                             <p style="text-align:center">
-                                 <br /><br /><br /><br /><br /><br /><br />
-                             </p>
-
-                         </div>
-                     </footer>
-
-                </div>
-            </div>
-
-
-
-            <nav class="navbar navbar-default navbar-fixed-bottom">
-                <footer class="col-lg-12">
-                    <div class="center-block">
-                        <p style="text-align:center">&copy; @DateTime.Now.Year - 深圳航天信息有限公司&nbsp;&nbsp; </p>
-                    </div>
-                </footer>
-            </nav>
-
-
-
-        </div>
-
-    </body>*@
-
-</html>
+ </html>

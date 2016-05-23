@@ -15,23 +15,62 @@ namespace Alayaz.SOA.IService.TestClient
             // TestService();
             //  StartApp("Alayaz.CM.DN432.WebCrawl.exe", new string[] { "chosen" });// chosen  /  crawl
 
-            
-            
-            TestJustStartServiceHostByConsole();
+
+            // TestJustStartServiceHostByConsole();
 
 
-           // TestJustStartServiceHostByWinService();
+            // TestJustStartServiceHostByWinService();
+
+
+            // http://localhost:9000/alayazsoa/mex
+            Test_SyncImportInvoiceService_HostByWinService();
 
         }
 
         private static void TestJustStartServiceHostByConsole()
         {
-            using (Alayaz.SOA.IService.TestClient.ServiceRefConsole. FileReaderClient proxy = new Alayaz.SOA.IService.TestClient.ServiceRefConsole.FileReaderClient())
+            //using (Alayaz.SOA.IService.TestClient.ServiceRefConsole. FileReaderClient proxy = new Alayaz.SOA.IService.TestClient.ServiceRefConsole.FileReaderClient())
+            //{
+            //    proxy.JustStart("", "chosen");
+            //}
+            using (Alayaz.SOA.IService.TestClient.ServiceRefConsole.FileReaderClient proxy = new Alayaz.SOA.IService.TestClient.ServiceRefConsole.FileReaderClient("BasicHttpBinding_IFileReader"))
             {
                 proxy.JustStart("", "chosen");
             }
             
 
+            Console.Read();
+        }
+        private static void Test_SyncImportInvoiceService_HostByWinService()
+        {
+            using (ImpInvServiceProxy.SyncImportInvoiceServiceClient proxy = new ImpInvServiceProxy.SyncImportInvoiceServiceClient())
+            {
+
+                var soap = new Service.ViewModel.ImportInvoiceListDTO
+                {
+                    List = new System.Collections.Generic.List<Service.ViewModel.ImportInvoiceDTO>
+                    {
+                         new Service.ViewModel.ImportInvoiceDTO {
+                              InvoiceCode = "1234567890",
+                               InvoiceNumber = "12345678",
+                                CertificateStatus="1",
+                                 DeductionStatus="1",
+                                  Amount=1000,
+                                   Tax=170,
+                                    SalesTaxNumber="110101000000000",
+                                     TaxCode="110101999999999"
+                         }
+                    },
+                    Result = new Service.ViewModel.ImportInvoiceResultDTO
+                    {
+                        Message = "ok",
+                        Status = 0
+                    }
+
+
+                };
+                proxy.InjectList(soap);
+            }
             Console.Read();
         }
 

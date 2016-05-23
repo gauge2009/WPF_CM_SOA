@@ -1,20 +1,18 @@
 ﻿using System;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
+using System.ServiceModel.Web;
+
 namespace Alayaz.SOA.IService.ConsoleHost
 {
     [ServiceContract(Namespace = "http://www.alayaz.com/")]
+
     public interface IFileReader
     {
-        [OperationContract(AsyncPattern = true)]
-        IAsyncResult BeginRead(string fileName, AsyncCallback userCallback,object stateObject);
-        string EndRead(IAsyncResult asynResult);
+        
 
         [OperationContract(AsyncPattern = false)]
-        void Write(string fileName, string content);
-
-
-        [OperationContract(AsyncPattern = false)]
-        void JustStart(string appName, string param);
+         void JustStart(string appName, string param);
 
 
 

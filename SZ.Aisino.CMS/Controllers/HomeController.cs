@@ -11,10 +11,10 @@ namespace SZ.Aisino.CMS.Controllers
         
         public ActionResult Index( )
         {
-            
-            return Content("Alayaz  SOA  Service  Activating ......");
-          
 
+            //return Content("Alayaz  SOA  Service  Activating ......");
+
+            return View();
         }
       
 
