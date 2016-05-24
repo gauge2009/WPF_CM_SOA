@@ -22,15 +22,52 @@ namespace Alayaz.SOA.IService.TestClient
             // TestJustStartServiceHostByWinService();
 
 
-             
+
             //Test_SyncImportInvoiceService_HostByWinService();
 
 
-            // http://localhost:9000/alayazsoa/mex
-            Test_SyncImportInvoiceService_HostByConsole();
+            // http://localhost:12000/alayazsoa/mex
+            //Test_SyncImportInvoiceService_HostByConsole();
+
+            // http://localhost:13000/alayazsoa/mex
+            Test_SyncImportInvoiceService_HostByWindowsService();
 
 
         }
+
+        private static void Test_SyncImportInvoiceService_HostByWindowsService()
+        {
+            using (RemoteServiceHostByWinServiceRef.SyncImportInvoiceServiceClient proxy = new RemoteServiceHostByWinServiceRef.SyncImportInvoiceServiceClient())
+            {
+
+                var soap = new Service.ViewModel.ImportInvoiceListDTO
+                {
+                    List = new System.Collections.Generic.List<Service.ViewModel.ImportInvoiceDTO>
+                    {
+                         new Service.ViewModel.ImportInvoiceDTO {
+                              InvoiceCode = "1234567890",
+                               InvoiceNumber = "87654321",
+                                CertificateStatus="1",
+                                 DeductionStatus="1",
+                                  Amount=1000,
+                                   Tax=170,
+                                    SalesTaxNumber="110101000000000",
+                                     TaxCode="110101999999999"
+                         }
+                    },
+                    Result = new Service.ViewModel.ImportInvoiceResultDTO
+                    {
+                        Message = "ok",
+                        Status = 0
+                    }
+
+
+                };
+                proxy.InjectList(soap);
+            }
+            Console.Read();
+        }
+
         private static void Test_SyncImportInvoiceService_HostByConsole()
         {
             using (RemoteServiceHostByConsoleRef.SyncImportInvoiceServiceClient proxy = new RemoteServiceHostByConsoleRef.SyncImportInvoiceServiceClient())

@@ -134,6 +134,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\WinSvcHostServiceRef\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="TypeBuilderHelper.cs" />
     <Compile Include="ViewModels\ContractViewModel.cs" />
     <Compile Include="AppStart\ShellViewModel.cs" />
@@ -234,6 +239,16 @@
     <None Include="Service References\ServiceProxy\SyncImportInvoiceService2.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\WinSvcHostServiceRef\mex.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WinSvcHostServiceRef\mex1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WinSvcHostServiceRef\mex2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\WinSvcHostServiceRef\SyncImportInvoiceService.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="imgs\contract.txt" />
@@ -278,6 +293,12 @@
     <Content Include="Axure\Index.html" />
     <Content Include="Axure\shCore.js" />
     <Content Include="Axure\tableload.js" />
+    <None Include="Service References\WinSvcHostServiceRef\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\WinSvcHostServiceRef\configuration.svcinfo" />
+    <None Include="Service References\WinSvcHostServiceRef\configuration91.svcinfo" />
     <None Include="Service References\ServiceProxy\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
@@ -315,6 +336,7 @@
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\ImpInvoiceServiceReference\" />
     <WCFMetadataStorage Include="Service References\ServiceProxy\" />
+    <WCFMetadataStorage Include="Service References\WinSvcHostServiceRef\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

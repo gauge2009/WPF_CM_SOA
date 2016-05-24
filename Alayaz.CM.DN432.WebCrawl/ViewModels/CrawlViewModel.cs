@@ -75,6 +75,13 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
         public string HtmlFakeFilePath { get; set; }
 
+        /// <summary>
+        /// SOAP交互模式   IISATV / IIS / WINSVC
+        /// </summary>
+        private string SoapMode { get; set; }
+
+        
+
         IList<int> start = new List<int>();
         public string parseResult { get; set; }
 
@@ -203,6 +210,9 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             this.End = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("End")) ? "" : ConfigurationManager.AppSettings.Get("End");
 
             this.InteractMode = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("InteractMode")) ? "MESSAGEBOX" : ConfigurationManager.AppSettings.Get("InteractMode");
+
+
+            this.SoapMode = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("SoapMode")) ? "WINSVC" : ConfigurationManager.AppSettings.Get("SoapMode");
 
 
 
@@ -1136,8 +1146,19 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
                 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
                 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
                 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                // CallWS(soap);
-                CallWsEAP(soap);
+                switch (this.SoapMode) {
+                    case "IISATV":
+                        CallWS(soap);
+                        break;
+                    case "IIS":
+                        CallWsEAP(soap);
+                        break;
+                    default:
+                    case "WINSVC":
+                        CallWsEAP_From_WinSrvHost(soap);
+                        break;
+
+                }               
                 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
                 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
                 /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
@@ -1214,14 +1235,17 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
         }
 
-
-
         #region SOA
-        /*  private void CallWS(ImportInvoiceListDTO soap)
+
+        /// <summary>
+        /// FIRE AND FORGOT
+        /// </summary>
+        /// <param name="soap"></param>
+          private void CallWS(ImportInvoiceListDTO soap)
           {
               Task task = new Task(() =>
               {
-                  using (var factory = new ChannelFactory<ISyncImportInvoiceService>("*"))
+                  using (var factory = new ChannelFactory< Alayaz.SOA.IService. ISyncImportInvoiceService>("*"))
                   {
                       var chl = factory.CreateChannel();
                       soap = chl.InjectList(soap);
@@ -1241,7 +1265,41 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
               }, TaskCreationOptions.LongRunning);
               task.Start();
-          }*/
+          } 
+
+        private void CallWsEAP_From_WinSrvHost(ImportInvoiceListDTO soap)
+        {
+            using (WinSvcHostServiceRef.SyncImportInvoiceServiceClient proxy = new WinSvcHostServiceRef.SyncImportInvoiceServiceClient())
+            {
+                proxy.InjectListCompleted += Proxy_InjectListCompleted;
+                proxy.InjectListAsync(soap);
+
+
+            }
+        }
+        private void Proxy_InjectListCompleted(object sender, WinSvcHostServiceRef.InjectListCompletedEventArgs e)
+        {
+            var rs = e.Result;
+            //if (soap.Result.Status == 0)
+            //{
+            //    //重试
+            //    soap = proxy.InjectList(soap);
+            //}
+            if (rs.Result.Status == -1)
+            {
+                // 修改UI线程
+                Interact(rs.Result.Message);
+            }
+            this.TipInfo = string.Format("{0},所有数据已同步完成", rs.Result.Message);
+            if (_IsLastPage)
+            {
+                Interact("所有同步任务已完成，确认后将关闭软件");
+                App.Current.Shutdown();
+            }
+
+        }
+
+
 
         private void CallWsEAP(ImportInvoiceListDTO soap)
         {

@@ -15,7 +15,7 @@ namespace Alayaz.SOA.IService.ConsoleHost
 
             host.Open();
 
-            Console.WriteLine("SOAP Service Host Sccuss and Satrt !  Do not Close this Winow!");
+            Console.WriteLine("SOAP Service Host Success and Satrt !  Do not Close this Winow!");
             Console.ReadLine();
         }
     }

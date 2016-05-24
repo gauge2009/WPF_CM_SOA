@@ -75,6 +75,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\RemoteServiceHostByWinServiceRef\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\ServiceProxy\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -101,16 +106,26 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\ImpInvServiceProxy\SyncImportInvoiceService.wsdl" />
-    <None Include="Service References\RemoteServiceHostByConsoleRef\mex3.xsd">
+    <None Include="Service References\RemoteServiceHostByConsoleRef\mex.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\RemoteServiceHostByConsoleRef\mex31.xsd">
+    <None Include="Service References\RemoteServiceHostByConsoleRef\mex1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\RemoteServiceHostByConsoleRef\mex32.xsd">
+    <None Include="Service References\RemoteServiceHostByConsoleRef\mex2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\RemoteServiceHostByConsoleRef\SyncImportInvoiceService1.wsdl" />
+    <None Include="Service References\RemoteServiceHostByConsoleRef\SyncImportInvoiceService.wsdl" />
+    <None Include="Service References\RemoteServiceHostByWinServiceRef\mex.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\RemoteServiceHostByWinServiceRef\mex1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\RemoteServiceHostByWinServiceRef\mex2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\RemoteServiceHostByWinServiceRef\SyncImportInvoiceService.wsdl" />
     <None Include="Service References\ServiceProxy\FileReaderService1.wsdl" />
     <None Include="Service References\ServiceProxy\mex1.wsdl" />
     <None Include="Service References\ServiceProxy\mex2.xsd">
@@ -134,6 +149,7 @@
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\ImpInvServiceProxy\" />
     <WCFMetadataStorage Include="Service References\RemoteServiceHostByConsoleRef\" />
+    <WCFMetadataStorage Include="Service References\RemoteServiceHostByWinServiceRef\" />
     <WCFMetadataStorage Include="Service References\ServiceProxy\" />
     <WCFMetadataStorage Include="Service References\ServiceRefConsole\" />
   </ItemGroup>
@@ -191,6 +207,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\RemoteServiceHostByConsoleRef\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\RemoteServiceHostByWinServiceRef\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\RemoteServiceHostByWinServiceRef\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\RemoteServiceHostByWinServiceRef\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
