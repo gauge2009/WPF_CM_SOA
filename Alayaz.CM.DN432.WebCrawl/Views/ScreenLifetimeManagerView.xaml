@@ -5,7 +5,7 @@
         xmlns:cal="http://www.caliburnproject.org"  
         Title="{Binding WindowTitle}"
                 Icon="/Alayaz.CM.DN432.WebCrawl;component/imgs/user.png"
-         Width="500" Height="380"  
+         Width="500" Height="380"    
        >
 
 

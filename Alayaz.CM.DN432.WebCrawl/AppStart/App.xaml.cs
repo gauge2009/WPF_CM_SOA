@@ -23,7 +23,7 @@ namespace Alayaz.CM.DN432.WebCrawl
             {
                 s_BootArgs = args[1];
 
-                MessageBox.Show(s_BootArgs);
+                //MessageBox.Show(s_BootArgs);
             }
             if (args.Length == 4)
             {// > C:\Alayaz\Alayaz.CM.DN432.WebCrawl.exe /c chosen 2016-05-01 2016-05-21
