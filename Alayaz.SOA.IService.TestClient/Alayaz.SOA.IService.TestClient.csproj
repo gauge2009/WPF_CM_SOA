@@ -70,6 +70,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\RemoteServiceHostByConsoleRef\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\ServiceProxy\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -96,6 +101,16 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\ImpInvServiceProxy\SyncImportInvoiceService.wsdl" />
+    <None Include="Service References\RemoteServiceHostByConsoleRef\mex3.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\RemoteServiceHostByConsoleRef\mex31.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\RemoteServiceHostByConsoleRef\mex32.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\RemoteServiceHostByConsoleRef\SyncImportInvoiceService1.wsdl" />
     <None Include="Service References\ServiceProxy\FileReaderService1.wsdl" />
     <None Include="Service References\ServiceProxy\mex1.wsdl" />
     <None Include="Service References\ServiceProxy\mex2.xsd">
@@ -118,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadataStorage Include="Service References\ImpInvServiceProxy\" />
+    <WCFMetadataStorage Include="Service References\RemoteServiceHostByConsoleRef\" />
     <WCFMetadataStorage Include="Service References\ServiceProxy\" />
     <WCFMetadataStorage Include="Service References\ServiceRefConsole\" />
   </ItemGroup>
@@ -166,6 +182,18 @@
       <Project>{f025952b-88c7-4ad4-aba8-dc2b9834d189}</Project>
       <Name>Alayaz.SOA.Service.ViewModel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\RemoteServiceHostByConsoleRef\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\RemoteServiceHostByConsoleRef\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\RemoteServiceHostByConsoleRef\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -22,9 +22,46 @@ namespace Alayaz.SOA.IService.TestClient
             // TestJustStartServiceHostByWinService();
 
 
-            // http://localhost:9000/alayazsoa/mex
-            Test_SyncImportInvoiceService_HostByWinService();
+             
+            //Test_SyncImportInvoiceService_HostByWinService();
 
+
+            // http://localhost:9000/alayazsoa/mex
+            Test_SyncImportInvoiceService_HostByConsole();
+
+
+        }
+        private static void Test_SyncImportInvoiceService_HostByConsole()
+        {
+            using (RemoteServiceHostByConsoleRef.SyncImportInvoiceServiceClient proxy = new RemoteServiceHostByConsoleRef.SyncImportInvoiceServiceClient())
+            {
+
+                var soap = new Service.ViewModel.ImportInvoiceListDTO
+                {
+                    List = new System.Collections.Generic.List<Service.ViewModel.ImportInvoiceDTO>
+                    {
+                         new Service.ViewModel.ImportInvoiceDTO {
+                              InvoiceCode = "1234567890",
+                               InvoiceNumber = "12345678",
+                                CertificateStatus="1",
+                                 DeductionStatus="1",
+                                  Amount=1000,
+                                   Tax=170,
+                                    SalesTaxNumber="110101000000000",
+                                     TaxCode="110101999999999"
+                         }
+                    },
+                    Result = new Service.ViewModel.ImportInvoiceResultDTO
+                    {
+                        Message = "ok",
+                        Status = 0
+                    }
+
+
+                };
+                proxy.InjectList(soap);
+            }
+            Console.Read();
         }
 
         private static void TestJustStartServiceHostByConsole()

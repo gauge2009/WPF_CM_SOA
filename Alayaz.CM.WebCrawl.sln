@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SZ.Aisino.WebCrawler.Tradition", "SZ.Aisino.WebCrawler\SZ.Aisino.WebCrawler.Tradition.csproj", "{4FDBA13C-BEF0-4988-8BD9-98E4946F62CD}"
 EndProject
@@ -46,6 +46,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alayaz.SOA.IService.ConsoleHost", "Alayaz.SOA.IService.ConsoleHost\Alayaz.SOA.IService.ConsoleHost.csproj", "{8A945DF7-75E4-4C56-9E02-D9F64C4BAB8E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alayaz.SOA.IService.WindowsServiceHostServer", "Alayaz.SOA.IService.WindowsServiceHostServer\Alayaz.SOA.IService.WindowsServiceHostServer.csproj", "{6092B65A-BA7C-44C6-9BDA-B5C5239813DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alayaz.SOA.IService.ConsoleHostServer", "Alayaz.SOA.IService.ConsoleHostServer\Alayaz.SOA.IService.ConsoleHostServer.csproj", "{03504CDD-E633-457A-BECC-2E7ABFE50620}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -189,6 +191,14 @@ Global
 		{6092B65A-BA7C-44C6-9BDA-B5C5239813DB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6092B65A-BA7C-44C6-9BDA-B5C5239813DB}.Release|x86.ActiveCfg = Release|Any CPU
 		{6092B65A-BA7C-44C6-9BDA-B5C5239813DB}.Release|x86.Build.0 = Release|Any CPU
+		{03504CDD-E633-457A-BECC-2E7ABFE50620}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03504CDD-E633-457A-BECC-2E7ABFE50620}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03504CDD-E633-457A-BECC-2E7ABFE50620}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{03504CDD-E633-457A-BECC-2E7ABFE50620}.Debug|x86.Build.0 = Debug|Any CPU
+		{03504CDD-E633-457A-BECC-2E7ABFE50620}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03504CDD-E633-457A-BECC-2E7ABFE50620}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03504CDD-E633-457A-BECC-2E7ABFE50620}.Release|x86.ActiveCfg = Release|Any CPU
+		{03504CDD-E633-457A-BECC-2E7ABFE50620}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -211,5 +221,6 @@ Global
 		{1A8A7E64-7D11-40E5-99E3-BE92C3EEB6C2} = {F432EF09-CBA4-4AD9-B61B-DCEDDDB3E742}
 		{8A945DF7-75E4-4C56-9E02-D9F64C4BAB8E} = {F432EF09-CBA4-4AD9-B61B-DCEDDDB3E742}
 		{6092B65A-BA7C-44C6-9BDA-B5C5239813DB} = {C5299E87-A5FE-451B-AA15-5E972FBC97A0}
+		{03504CDD-E633-457A-BECC-2E7ABFE50620} = {C5299E87-A5FE-451B-AA15-5E972FBC97A0}
 	EndGlobalSection
 EndGlobal
