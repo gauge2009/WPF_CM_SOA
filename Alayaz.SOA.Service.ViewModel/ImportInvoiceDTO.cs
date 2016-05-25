@@ -16,6 +16,7 @@ namespace Alayaz.SOA.Service.ViewModel
             set;
         }
 
+
         [DataMember]
         public ImportInvoiceResultDTO Result
         {
@@ -32,7 +33,7 @@ namespace Alayaz.SOA.Service.ViewModel
         /// <summary>
         /// 发票代码
         /// </summary>
-        [DataMember, Required]
+        [DataMember]
         public string InvoiceCode
         {
             get;
@@ -41,7 +42,7 @@ namespace Alayaz.SOA.Service.ViewModel
         /// <summary>
         /// 发票号码
         /// </summary>
-        [DataMember, Required]
+        [DataMember]
         public string InvoiceNumber
         {
             get;
@@ -52,6 +53,15 @@ namespace Alayaz.SOA.Service.ViewModel
         /// </summary>
         [DataMember]
         public string CreateDate
+        {
+            get;
+            set;
+        } 
+        /// <summary>
+          /// 开票时间
+          /// </summary>
+        [DataMember]
+        public DateTime CreateDateTime
         {
             get;
             set;
@@ -77,7 +87,7 @@ namespace Alayaz.SOA.Service.ViewModel
         /// <summary>
         /// 税额
         /// </summary>
-        [DataMember, Required]
+        [DataMember]
         public decimal Tax
 
         {
@@ -88,7 +98,7 @@ namespace Alayaz.SOA.Service.ViewModel
         /// <summary>
         /// 来源
         /// </summary>
-        [DataMember, Required]
+        [DataMember]
         public string From
         {
             get;
@@ -97,7 +107,7 @@ namespace Alayaz.SOA.Service.ViewModel
         /// <summary>
         /// 发票状态 (正常)
         /// </summary>
-        [DataMember, Required]
+        [DataMember]
         public string Status
         {
             get;
@@ -106,7 +116,7 @@ namespace Alayaz.SOA.Service.ViewModel
         /// <summary>
         /// 勾选标志 （未勾选）
         /// </summary>
-        [DataMember, Required]
+        [DataMember]
         public string SelectTag
         {
             get;
@@ -115,7 +125,7 @@ namespace Alayaz.SOA.Service.ViewModel
         /// <summary>
         /// 操作时间 （未操作 / DateTime）
         /// </summary>
-        [DataMember, Required]
+        [DataMember]
         public string OperationTime
         {
             get;
@@ -124,7 +134,7 @@ namespace Alayaz.SOA.Service.ViewModel
         /// <summary>
         /// 认证状态 （页面：确认标志  ~ 未确认/已确认）
         /// </summary>
-        [DataMember, Required]
+        [DataMember]
         public string CertificateStatus
         {
             get;
@@ -133,17 +143,36 @@ namespace Alayaz.SOA.Service.ViewModel
         /// <summary>
         /// 抵扣状态 （抵扣状态（1：已抵扣；2：未抵扣；3：已过期；））
         /// </summary>
-        [DataMember, Required]
+        [DataMember]
         public string DeductionStatus
         {
             get;
             set;
-        } 
+        }
         /// <summary>
-           /// 购方税号  
-           /// </summary>
-        [DataMember, Required]
+        /// 购方税号  
+        /// </summary>
+        [DataMember]
         public string TaxCode
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// '勾选标志（已勾选、未勾选）';
+        /// </summary>
+        [DataMember]
+        public string IsChosen
+        {
+            get;
+            set;
+        }
+        /// <summary>
+        /// '确认标志（已确认，未确认）';  
+        /// </summary>
+        [DataMember]
+        public string IsConfirmed
         {
             get;
             set;
@@ -154,4 +183,4 @@ namespace Alayaz.SOA.Service.ViewModel
 
     }
 
- }
+}

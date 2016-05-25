@@ -25,8 +25,8 @@ namespace Alayaz.Graph.WPF.Common
         public string TaxCode { get; set; }
         public string Begin { get; set; }
         public string End { get; set; }
-
-
+ 
+        
     }
     public static class GlobalData
     {

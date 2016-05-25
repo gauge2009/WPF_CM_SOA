@@ -115,6 +115,7 @@
     <Compile Include="AppStart\AppBootstrapper.cs" />
     <Compile Include="AppStart\BaseViewModel.cs" />
     <Compile Include="AppStart\CoroutinesBootstrapper.cs" />
+    <Compile Include="AppStart\ConfirmScreenLifetimeManagerViewModel.cs" />
     <Compile Include="AppStart\ScreenLifetimeManagerViewModel.cs" />
     <Compile Include="Common\LogHelpercs.cs" />
     <Compile Include="Common\Worker.cs" />
@@ -140,6 +141,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="TypeBuilderHelper.cs" />
+    <Compile Include="ViewModels\ConfirmViewModel.cs" />
     <Compile Include="ViewModels\ContractViewModel.cs" />
     <Compile Include="AppStart\ShellViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
@@ -174,6 +176,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\LoginView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ConfirmScreenLifetimeManagerView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

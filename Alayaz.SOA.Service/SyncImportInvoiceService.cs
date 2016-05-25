@@ -151,33 +151,54 @@ namespace Alayaz.SOA.Service
                     Status = 0
                 }
             };
-            using (TaxEntities db = new TaxEntities())
+            try
             {
-
-                var datas = db.VIMS_BIZ_INVOICE.Where(o =>
-                 !string.IsNullOrEmpty(condition.InvoiceCode) ? o.FPDM == condition.InvoiceCode : true
-                    &&
-                       !string.IsNullOrEmpty(condition.InvoiceCode) ? o.FPDM == condition.InvoiceCode : true
-                    );
-
-                if (!string.IsNullOrEmpty(condition.InvoiceCode))
+                using (TaxEntities db = new TaxEntities())
                 {
-                    datas = datas.Where(o => o.FPDM == condition.InvoiceCode);
+
+                    var datas = db.VIMS_BIZ_INVOICE.Where(o =>
+                     !string.IsNullOrEmpty(condition.InvoiceCode) ? o.FPDM == condition.InvoiceCode : true
+                        &&
+                     !string.IsNullOrEmpty(condition.InvoiceNumber) ? o.FPDM == condition.InvoiceNumber : true
+
+                        );
+
+                    //if (!string.IsNullOrEmpty(condition.IsChosen))
+                    //{
+                    //    datas = datas.Where(o => o.GSBZ == condition.IsChosen);
+
+                    //}
+                    //if (!string.IsNullOrEmpty(condition.IsConfirmed))
+                    //{
+                    //    datas = datas.Where(o => o.QRBZ == condition.IsConfirmed);
+
+                    //}
+                    // var data = datas.OrderByDescending(o => o.KPRQ).DoPage(condition.Pager).ToList();
+                    var data = datas.Select(o => new ImportInvoiceDTO
+                    {
+                        InvoiceCode = o.FPDM,
+                        InvoiceNumber = o.FPHM,
+                        // CreateDate = o.KPRQ.ToString(),
+                        Amount = o.FPJE,
+                        Tax = o.FPSE,
+                        SalesTaxNumber = o.XFSH,
+                        //IsChosen = o.GSBZ,
+                        //IsConfirmed == o.QRBZ,
+                        CreateDateTime = o.KPRQ,
+                        CreateDate = o.KPRQ.ToString("yyyy-MM-dd"),
+                        IsChosen = "1",
+                        IsConfirmed = "0"
+
+                    }).OrderByDescending(o => o.InvoiceCode).ToList();
+                    rs.List = data;
+                    rs.Result.Status = data.Count;
 
                 }
-                // var data = datas.OrderByDescending(o => o.KPRQ).DoPage(condition.Pager).ToList();
-                var data = datas.Select(o => new ImportInvoiceDTO
-                {
-                    InvoiceCode = o.FPDM,
-                    InvoiceNumber = o.FPHM,
-                   // CreateDate = o.KPRQ.ToString(),
-                    Amount = o.FPJE,
-                    Tax = o.FPSE,
-                    SalesTaxNumber = o.XFSH,
-
-                }).OrderByDescending(o => o.InvoiceCode).ToList();
-                rs.List = data;
-
+            }
+            catch (Exception ex)
+            {
+                rs.Result.Status = -1;
+                rs.Result.Message = ex.Message;
             }
             return rs;
         }

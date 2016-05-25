@@ -8,8 +8,8 @@ using System.Configuration;
 namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 {
     //public class ShellViewModel : Screen, IShell
-    [Export(typeof(IShell))]
-    public class ScreenLifetimeManagerViewModel : Conductor<object>, IShell
+    [Export(typeof(IConfirmShell))]
+    public class ConfirmScreenLifetimeManagerViewModel : Conductor<object>, IConfirmShell
     {
         readonly CrawlViewModel screen1;
         readonly LoginViewModel screen2;
@@ -18,24 +18,12 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
         readonly Stack<object> previous = new Stack<object>();
         bool goingBack;
         [ImportingConstructor]
-        public ScreenLifetimeManagerViewModel(CrawlViewModel screen1, LoginViewModel screen2, ConfirmViewModel  screen3)
+        public ConfirmScreenLifetimeManagerViewModel(CrawlViewModel screen1, LoginViewModel screen2, ConfirmViewModel  screen3)
         {
             this.WindowTitle = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("WindowTitle")) ? this.GetType().FullName : ConfigurationManager.AppSettings.Get("WindowTitle");
 
-            this.initialialScreen = !string.IsNullOrEmpty(GlobalData.PWD) ? (Screen)screen1 : (Screen)screen2;
-
-            //if (string.IsNullOrEmpty(GlobalData.ImpInvViewModel.BootMode)|| GlobalData.ImpInvViewModel.BootMode.ToLower() == "crawl")
-            //{
-            //    this.initialialScreen = !string.IsNullOrEmpty(GlobalData.PWD) ? (Screen)screen1 : (Screen)screen2;
-            //    this.WidthVal = 500;
-            //    this.HeightVal = 100;
-            //}
-            //else if(GlobalData.ImpInvViewModel.BootMode.ToLower() == "confirm")
-            //{
-            //    this.initialialScreen = (Screen)screen3;
-            //    this.WidthVal = 1050;
-            //    this.HeightVal = 700;
-            //}
+            this.initialialScreen = !string.IsNullOrEmpty(GlobalData.PWD) ? (Screen)screen3 : (Screen)screen2;
+            
         }
         private double widthVal;
         public double WidthVal
@@ -111,32 +99,32 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
 
 
-        public void InitHandler(object source)
-        {
-            //if (win == null)
-            //    return;
-            //if (GlobalData.ImpInvViewModel.BootMode.ToLower() == "confirm")
-            //{
-            //    win.Width = 1050;
-            //    win.Height = 700;
-            //}
-            //win.Activated
-            //win.Initialized
-            //win.LayoutUpdated
+        //public void InitHandler(object source)
+        //{
+        //    //if (win == null)
+        //    //    return;
+        //    //if (GlobalData.ImpInvViewModel.BootMode.ToLower() == "confirm")
+        //    //{
+        //    //    win.Width = 1050;
+        //    //    win.Height = 700;
+        //    //}
+        //    //win.Activated
+        //    //win.Initialized
+        //    //win.LayoutUpdated
 
-            if (string.IsNullOrEmpty(GlobalData.ImpInvViewModel.BootMode) || GlobalData.ImpInvViewModel.BootMode.ToLower() == "crawl")
-            {
-                this.WidthVal = 500;
-                this.HeightVal = 100;
-            }
-            else if (GlobalData.ImpInvViewModel.BootMode.ToLower() == "confirm")
-            {
-                this.WidthVal = 1050;
-                this.HeightVal = 700;
-            }
+        //    if (string.IsNullOrEmpty(GlobalData.ImpInvViewModel.BootMode) || GlobalData.ImpInvViewModel.BootMode.ToLower() == "crawl")
+        //    {
+        //        this.WidthVal = 500;
+        //        this.HeightVal = 100;
+        //    }
+        //    else if (GlobalData.ImpInvViewModel.BootMode.ToLower() == "confirm")
+        //    {
+        //        this.WidthVal = 1050;
+        //        this.HeightVal = 700;
+        //    }
 
 
-        }
+        //}
 
 
     }

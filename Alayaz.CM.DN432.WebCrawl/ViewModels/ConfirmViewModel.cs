@@ -38,34 +38,38 @@ using Alayaz.CM.DN432.WebCrawl.ServiceProxy;
 
 namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 {
- 
-    //  [Export("Crawl", typeof(CrawlViewModel))]
+
+    //  [Export("Confirm", typeof(ConfirmViewModel))]
     [Export(typeof(ConfirmViewModel))]
-    public partial class ConfirmViewModel : Screen
+    public partial class ConfirmViewModel : BaseViewModel //Screen
     {
 
 
         private static string s_startUri = "https://fpdk.szgs.gov.cn/";
         private static string s_targetUri = "https://fpdk.szgs.gov.cn/fpcx.html";
+        private static string s_chosenUri = "https://fpdk.szgs.gov.cn/fphx.html";
+        private static string s_confirmUri = "https://fpdk.szgs.gov.cn/sbqr.html";
         private static string s_htmlFake = "N/A";
         private static string s_htmlFakeFilePath = "demo.txt";
         private bool isStartUriOpenned = false;
+        #region Traditional Prop
 
+        public string ChosenUri { get; set; }
+        public string ConfirmUri { get; set; }
         public string IsOffline { get; set; }
         public string IfCallWS { get; set; }
         public string IfLog { get; set; }
         public string DeviceKey { get; set; }
-        public string ShowWDforDebug { get; set; }
         public string TaxCode { get; set; }
         public string Begin { get; set; }
         public string End { get; set; }
-        public string RequestParamsSource { get; set; }
-        /// <summary>
-        ///  MESSAGEBOX / LOG  /  PERSIST 
-        /// </summary>
-        public string InteractMode { get; set; }
+        public string RequestParamsSourceForConfirm { get; set; }
+        ///// <summary>
+        /////  MESSAGEBOX / LOG  /  PERSIST 
+        ///// </summary>
+        //public string InteractMode { get; set; }
 
-        private log4net.ILog Log { get; set; }
+        //private log4net.ILog Log { get; set; }
 
         public string HtmlFakeFilePath { get; set; }
 
@@ -74,26 +78,15 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
         /// </summary>
         private string SoapMode { get; set; }
 
-        
+
 
         IList<int> start = new List<int>();
         public string parseResult { get; set; }
 
+        #endregion
         #region Prop with NotifyOfPropertyChange
-
-
-
-        private Visibility canVisal;
-        public Visibility CanVisal
-        {
-            get { return canVisal; }
-
-            set
-            {
-                canVisal = value;
-                NotifyOfPropertyChange(() => CanVisal);
-            }
-        }
+ 
+      
 
         private string startUri;
         public string StartUri
@@ -119,65 +112,13 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             }
         }
 
-        private string tipInfo;
-        public string TipInfo
-        {
-            get { return tipInfo; }
-
-            set
-            {
-                tipInfo = value;
-                NotifyOfPropertyChange(() => TipInfo);
-            }
-        }
-
-        private bool isBusy;
-        public bool IsBusy
-        {
-            get { return isBusy; }
-
-            set
-            {
-                isBusy = value;
-                NotifyOfPropertyChange(() => IsBusy);
-            }
-        }
-        private string busyText;
-        public string BusyText
-        {
-            get { return busyText; }
-
-            set
-            {
-                busyText = value;
-                NotifyOfPropertyChange(() => BusyText);
-            }
-        }
+       
         #endregion
 
-
-        public ConfirmViewModel()
+        public ConfirmViewModel() : base()
         {
-            this.Log = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-            // this.Log.Info(msg);
-
-            this.ShowWDforDebug = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("ShowWDforDebug")) ? "0" : ConfigurationManager.AppSettings.Get("ShowWDforDebug");
-#if DEBUG
-
-            if ("1" == this.ShowWDforDebug)
-            {
-                this.CanVisal = Visibility.Visible;
-            }
-            else
-            {
-                this.CanVisal = Visibility.Hidden;
-            }
-#else
-             this.CanVisal = Visibility.Hidden;
-#endif
+             
             InitFromConfig();
-
-            Init();
 
 
         }
@@ -198,7 +139,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
             this.TaxCode = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("TaxCode")) ? "" : ConfigurationManager.AppSettings.Get("TaxCode");
 
-            this.RequestParamsSource = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("RequestParamsSource")) ? "" : ConfigurationManager.AppSettings.Get("RequestParamsSource");
+            this.RequestParamsSourceForConfirm = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("RequestParamsSourceForConfirm")) ? "" : ConfigurationManager.AppSettings.Get("RequestParamsSourceForConfirm");
             this.Begin = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("Begin")) ? "" : ConfigurationManager.AppSettings.Get("Begin");
 
             this.End = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("End")) ? "" : ConfigurationManager.AppSettings.Get("End");
@@ -208,7 +149,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
             this.SoapMode = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("SoapMode")) ? "WINSVC" : ConfigurationManager.AppSettings.Get("SoapMode");
 
-
+        
 
             GlobalData.TaxCode = this.TaxCode;
             //if( string.IsNullOrEmpty(this.TaxCode))
@@ -217,97 +158,41 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             //    return;
             //}
 
-            this.TipInfo = "欢迎使用进项同步助手";
 
 
-        }
+            this.TipInfo = "欢迎使用进项确认助手";
 
-        private void Interact(string msg, bool ifLogThreadID)
-        {
-            if (ifLogThreadID)
-                Interact(string.Format("Action={0} & {1} on Task{2}", msg, MethodInfo.GetCurrentMethod().Name, Thread.CurrentThread.ManagedThreadId.ToString()));
-            else
-                Interact(msg);
-        }
+            this.ChosenUri = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("ChosenUri")) ? s_chosenUri : ConfigurationManager.AppSettings.Get("ChosenUri");
 
-        /// <summary>
-        ///   UI交互模式   MESSAGEBOX / LOG  /  PERSIST   
-        /// </summary>
-        /// <param name="msg"></param>
-        private void Interact(string msg)
-        {
-            //this.InteractMode = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("InteractMode")) ? "MESSAGEBOX" : ConfigurationManager.AppSettings.Get("InteractMode");
+            this.ConfirmUri = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("ConfirmUri")) ? s_confirmUri: ConfigurationManager.AppSettings.Get("ConfirmUri");
 
-            this.TipInfo = msg;
-
-            switch (this.InteractMode)
-            {
-                case "PERSIST":
-                    // SOAP +  DB
-                    break;
-                case "LOG":
-                    this.Log.Info(msg);
-                    break;
-                default:
-                case "MESSAGEBOX":
-                    MessageBox.Show(msg);
-                    break;
-
-
-            }
  
-        }
-        private void Init()
-        {
 
-
-            // this.txtPageURI.Text = this.StartUri;
-            //this.webBox.Source = new Uri(this.StartUri);
-            //this.webBox.LoadCompleted += WebBox_LoadCompleted;
-
-#if DEBUG
-            if (File.Exists(this.HtmlFakeFilePath))
-            {
-                s_htmlFake = File.ReadAllText(this.HtmlFakeFilePath);
-            }
-
-#endif
-            //this.webBox .SourceUpdated+= WebBox_SourceUpdated;
         }
 
 
+ 
         #region  Methods for Action
 
-        /// <summary>
-        /// 不能在“WebBrowser”类型的“Source”属性上设置“Binding”,Source不是依赖属性
-        /// 首次加载CrawlView时才会呈现
-        /// </summary>
-        /// <param name="wb"></param>
-
+ 
         public void InitSource(WebBrowser wb, object view)
         {
-
-
+ 
             if (wb == null)
                 return;
-
-
-
-
-
+ 
             if (!isStartUriOpenned)
             {
                 wb.Source = new Uri(this.StartUri);
                 isStartUriOpenned = true;
             }
 
-
             #region Busy start!
             this.IsBusy = true;
             this.BusyText = "正在加载资源，请稍后......";
 
-            //wb.Visibility = Visibility.Hidden;
-            var vw = view as CrawlView;
+            wb.Visibility = Visibility.Hidden;
+            var vw = view as ConfirmView;
             if (vw != null)
             {
                 ProgressBar pBar = vw.FindName("ProgBar") as ProgressBar;
@@ -320,13 +205,9 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             }
             #endregion
 
-
             SetWebBrowserSilent(wb, true);
 
-
         }
-
-
 
         /// <summary>
         /// <N> 使用ActiveItem时不会触发
@@ -351,7 +232,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             this.TipInfo = currentUrl.Replace("https://fpdk.szgs.gov.cn/", "").Replace(".html", "") + "  ing...";
 
             //wb.Visibility = Visibility.Hidden;
-            var vw = view as CrawlView;
+            var vw = view as ConfirmView;
             if (vw != null)
             {
                 ProgressBar pBar = vw.FindName("ProgBar") as ProgressBar;
@@ -388,7 +269,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             {
                 string msg = "您尚未配置税号，请先配置TaxCode和DeviceKey节点再使用本软件";
                 Interact(msg);
-                LogHelper.WriteLog(typeof(CrawlView), string.Format("Some Configuration Missing:{0} | TaxCode:{1}", msg, GlobalData.TaxCode));
+                LogHelper.WriteLog(typeof(ConfirmView), string.Format("Some Configuration Missing:{0} | TaxCode:{1}", msg, GlobalData.TaxCode));
                 App.Current.Shutdown();
                 //return;
             }
@@ -396,9 +277,9 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             this.TipInfo = currentUrl.Replace("https://fpdk.szgs.gov.cn/", "").Replace(".html", "") + " 准备就绪";
             if (wb == null)
                 return;
-            //  wb.Visibility = Visibility.Visible;
+              wb.Visibility = Visibility.Visible;
 
-            var vw = view as CrawlView;
+            var vw = view as ConfirmView;
             if (vw != null)
             {
                 ProgressBar pBar = vw.FindName("ProgBar") as ProgressBar;
@@ -422,7 +303,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
              //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
              //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
-            if (currentUrl == this.TargetUri)
+            if (currentUrl == this.ChosenUri)
             {
                 this.IsBusy = false;
 
@@ -432,7 +313,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             }
             else if (currentUrl != this.StartUri)
             {//除首页登录页面外，都重定向到fpcx.html
-                wb.Source = new Uri(this.TargetUri);
+                wb.Source = new Uri(this.ChosenUri);
             }
 
             bool isOffline = string.Compare(this.IsOffline, "1", StringComparison.InvariantCultureIgnoreCase) == 0 ? true : false;
@@ -475,31 +356,6 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
 
             mshtml.IHTMLWindow2 win = (mshtml.IHTMLWindow2)doc2.parentWindow;
-            #region    监控js中的alert事件 
-            /*重写window.alert方法
-            (function(_) {
-                _.__alert__ = window.alert;
-                _.alert = function(message) {
-                    window.external.alertMessage(message);
-                };
-            })(window);
-            */
-            StringBuilder strAlertBuilder = new StringBuilder();
-            strAlertBuilder.Append("var _alert=window.alert;\n");
-            strAlertBuilder.Append("window.alert=function(str){\n");
-            strAlertBuilder.Append("window.external.AlertMessageCLR(str);}");
-            //strAlertBuilder.Append(" _.__alert__ = window.alert;\n");
-            //strAlertBuilder.Append("_.alert = function(message) {\n");
-            //strAlertBuilder.Append("window.external.alertMessage(message);");
-            //strAlertBuilder.Append("};");
-            ECMAScriptListener jsLsn = new ECMAScriptListener();
-            wb.ObjectForScripting = jsLsn;//该对象可由显示在WebBrowser控件中的网页所包含的脚本代码访问  (对象类型对 COM 不可见。您需要将 ComVisibleAttribute 特性设置为 True。)
-
-            win.execScript(strAlertBuilder.ToString(), "Javascript");
-
-
-            #endregion
-
 
             #region Auto Login
             if (currentUrl == this.StartUri && !string.IsNullOrEmpty(this.DeviceKey))
@@ -514,24 +370,18 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
                     Interact("检测到您输入的密码与惯常使用的密码不一致，登录失败");
                     ShowScreen("", typeof(LoginViewModel));
                 }
-
                 win.execScript(string.Format("Login('{0}', '', 1)", GlobalData.PWD), "javascript");
 
-
-
-
                 // CPU轮询
-
                    Interact("execScript Login()", true);
-  
 
                 //<N>JR:在UI线程处理轮询会阻塞此LoadCompleted的完成，导致UI阻塞，即使AJAX已经完成也不会更新wb的文档！！！
                 ///必须在工作线程中轮询，然后借助同步上下文更新UI并触发后续工作流！
                 ///
-                sw.Reset(); sw.Start();
+                sw.Reset();
+                sw.Start();
                  var task = new Task(() => PollingCheck(vw, doc2, CheckMode.CheckIsDataValidWhenLoginHtmlPartialUpdate,sw));
                 task.Start();
-
 
             }
 
@@ -543,68 +393,35 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             }
             // ShowScreen("", typeof(StartScreenViewModel));
             #region  Auto Search
-            if (currentUrl == this.TargetUri)
+            if (currentUrl == this.ChosenUri)
             {
-                Button btn = vw.FindName("Inject") as Button;
-                switch (this.RequestParamsSource)
+                Button btn = vw.FindName("Chose") as Button;
+                switch (this.RequestParamsSourceForConfirm)
                 {
                     case "WS":
-                        dateBegin = GlobalData.ImpInvViewModel.Begin; // 2016-05-4
-                        dateEnd = GlobalData.ImpInvViewModel.End;
+                        //dateBegin = GlobalData.ImpInvViewModel.Begin; // 2016-05-4
+                        //dateEnd = GlobalData.ImpInvViewModel.End;
                         AutoCrawl(view, btn);
                         break;
                     case "CONFIG":
                         dateBegin = this.Begin; // 2016-05-4
                         dateEnd = this.End;
-                        AutoCrawl(view, btn);
-                        break;
-                    case "DB":
-
-                        //todo
-
+                   //     AutoCrawl(view, btn);
                         break;
                     default:
-                    case "UI":
-                        DatePicker DateBegin = vw.FindName("DateBegin") as DatePicker;
-                        DatePicker DateEnd = vw.FindName("DateEnd") as DatePicker;
-                        if (DateBegin == null || DateEnd == null)
+                    case "DB":
+                        //RPC取值
+                        ImportInvoiceDTO cond = new ImportInvoiceDTO
                         {
-                            Interact("起/止日期不能为空");
-                            return;
+                            IsChosen = "1",
+                            IsConfirmed = "0",
 
-                        }
-                        dateBegin = DateBegin.Text; // 2016-05-4
-                        dateEnd = DateEnd.Text;
-                        /* System.IFormatProvider format =
-          new System.Globalization.CultureInfo("fr-FR", true);
-                          DateTime begin = DateTime.Parse(dateBegin, format );*/
-                        System.IFormatProvider format =
-        new System.Globalization.CultureInfo("zh-CN");
-                        DateTime? begin = null;
-                        DateTime? end = null;
-                        if (!string.IsNullOrEmpty(dateBegin))
-                        {
-                            begin = DateTime.Parse(dateBegin, format);
-                        }
-                        else
-                        {
-                            dateBegin = DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd");
+                        };
+                        RPC_GetChosenUnconfirmedList_From_WinSrvHost(cond);
 
-                        }
-                        if (!string.IsNullOrEmpty(dateEnd))
-                        {
-                            end = DateTime.Parse(dateEnd, format);
-                        }
-                        else
-                        {
-                            dateEnd = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd");
+                        DealWithDate(  this.ChosenUnconfirmedList );
 
-                        }
-                        if (begin.HasValue && end.HasValue && end < begin)
-                        {
-                            Interact("起始日期应不大于结束日期");
-                            return;
-                        }
+                        AutoCrawl(view, btn);
 
                         break;
                 }
@@ -612,65 +429,57 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
             #endregion
         }
-
+        private void DealWithDate(  ImportInvoiceListDTO list)
+        {
+            if (list.Result.Status > 0)
+            {
+                DateTime beginDateTime = list.List.Min(o => o.CreateDateTime);
+                DateTime endDateTime = list.List.Max(o => o.CreateDateTime);
+                dateBegin = beginDateTime.ToString("yyyy-MM-dd");  // 2016-05-4
+                dateEnd = endDateTime.ToString("yyyy-MM-dd");
+            }
+        }
         private string dateBegin = "";
         private string dateEnd = "";
-        private bool IsUnConfirmChecked = true;
-        public void SourceUpdatedHandler(NavigationEventArgs e, object view, WebBrowser wb)
-        {
-            Interact("SourceUpdated !");
-
-        }
+        private bool IsChoseChecked = true;
 
         public void AutoCrawl(object view, Button btn)//  private void BtnDownload_Click(object sender, 
         {
-
-
-            Uri uri = new Uri(this.TargetUri);
-            Uri uri2 = new Uri(string.Format("{0}#", this.TargetUri));
-
-
+            Uri uri = new Uri(this.ChosenUri);
+            Uri uri2 = new Uri(string.Format("{0}#", this.ChosenUri));
             WebBrowser wb = null;
-            var vw = view as CrawlView;
+            var vw = view as ConfirmView;
             if (vw != null)
             {
-
                 wb = vw.FindName("webBox") as WebBrowser;
-
-
 #if DEBUG
                 mshtml.IHTMLDocument2 _doc2 = (mshtml.IHTMLDocument2)wb.Document;
                 string html = _doc2.body.innerHTML;
                 Debug.WriteLine(html);
 #endif
-
                 if (wb == null || (wb.Source != uri && wb.Source != uri2))
                 {
                     Interact("网络异常，请确保您的网络连接正常后重新运行软件（没有适合的数据）");
                     return;
                 }
- 
             }
-
-
-            #region 确认标志 IsUnConfirmChecked  (qrzt0~未确认 /  qrzt1~已确认)  +  input注入  sjq  sjz
+            #region 模拟点击已勾选 IsUnConfirmChecked  (hxzt0~未勾选 /  hxzt1~已勾选)  +  input注入  sjq  sjz
             var currentUrl = wb.Source.AbsoluteUri;
             if (currentUrl.Contains("#"))
             {//判断是查询后的页面
-
                 currentUrl = currentUrl.Replace("#", "");
             }
             mshtml.IHTMLDocument2 doc2 = (mshtml.IHTMLDocument2)wb.Document;
 
-            if (currentUrl == this.TargetUri)
+            if (currentUrl == this.ChosenUri)
             {
-                #region 确认标志 IsUnConfirmChecked  (qrzt0~未确认 /  qrzt1~已确认) 
-                mshtml.IHTMLElement qrzt0 = (mshtml.IHTMLElement)doc2.all.item("qrzt0", 0);
-                if (qrzt0 != null)
+                #region 勾选标志 IsUnConfirmChecked   (hxzt0~未勾选 /  hxzt1~已勾选) 
+                mshtml.IHTMLElement hxzt1 = (mshtml.IHTMLElement)doc2.all.item("hxzt1", 0);
+                if (hxzt1 != null)
                 {
-                    IsUnConfirmChecked = (bool)qrzt0.getAttribute("CHECKED");
+                    IsChoseChecked = (bool)hxzt1.getAttribute("checked");
                     // login_header.setAttribute("style", "display: none;");
-                    Debug.WriteLine(IsUnConfirmChecked);
+                    Debug.WriteLine(IsChoseChecked);
                 }
                 #endregion
                 #region  input注入  sjq  sjz
@@ -688,15 +497,14 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
                 #endregion
             }
-
             #endregion
             #region  触发查询 <A onclick=searchInfo(); id=search class="button button-blue" href="#" onFocus="undefined"><SPAN>查询</SPAN></A> 
-            if (currentUrl == this.TargetUri)
+            if (currentUrl == this.ChosenUri)
             {
                 mshtml.IHTMLWindow2 win = (mshtml.IHTMLWindow2)doc2.parentWindow;
 
                 win.execScript("searchInfo()", "javascript");
-                //Thread.Sleep(4000);
+                //Thread.Sleep(4000); // too bad !
             }
             //法1：<N>JR:查询后续流程基于异步事件通知实现
 
@@ -717,7 +525,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
 
 #if DEBUG
-            Interact("execScript searchInfo()", true);
+            Interact("exec  查询-发票勾选状态", true);
  #endif
 
             //<N>JR:在UI线程处理轮询会阻塞此LoadCompleted的完成，导致UI阻塞，即使AJAX已经完成也不会更新wb的文档！！！
@@ -726,7 +534,8 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             ///
             sw.Reset();
             sw.Start();
-             var task = new Task(() => PollingCheck(vw, doc2, CheckMode.CheckIsDataValidWhenFpcxHtmlPartialUpdate, sw));
+             var task = new Task(() => PollingCheck(vw, doc2, CheckMode.CheckIsDataValidWhenFphxHtmlPartialUpdate, sw));
+            //
             task.Start();
             //Task.WaitAll(task);
             #endregion
@@ -735,17 +544,17 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
         }
 
-        // public delegate void StartCrawlDelegate(CrawlView vw);
+        // public delegate void StartCrawlDelegate(ConfirmView vw);
 
            
 
-        private void PollingCheck(CrawlView vw, IHTMLDocument2 doc2, CheckMode checkmode, Stopwatch sw)
+        private void PollingCheck(ConfirmView vw, IHTMLDocument2 doc2, CheckMode checkmode, Stopwatch sw)
         {
              var hasValidData = false;
             switch (checkmode)
             {
-                case CheckMode.CheckIsDataValidWhenFpcxHtmlPartialUpdate:
-                    hasValidData= CheckIsDataValidWhenFpcxHtmlPartialUpdate(doc2);
+                case CheckMode.CheckIsDataValidWhenFphxHtmlPartialUpdate:
+                    hasValidData = CheckIsDataValidWhenFphxHtmlPartialUpdate(doc2);
                     break;
                 default:
                 case CheckMode.CheckIsDataValidWhenLoginHtmlPartialUpdate:
@@ -758,22 +567,21 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
             if (hasValidData)
             {
-                
-                if (checkmode == CheckMode.CheckIsDataValidWhenFpcxHtmlPartialUpdate)
-                {
-                    Interact("CheckIsDataValidWhenFpcxHtmlPartialUpdate", true);
-                    // ui thread
-                    Action<CrawlView> action = StartCrawl;
-                    vw.Dispatcher.Invoke(action, DispatcherPriority.Normal, new object[] {
-                   vw
-                });
-                    //vw.Dispatcher.Invoke(   new StartCrawlDelegate(StartCrawl), new object[] { vw });
-                    // work thread
-                    Interact("searchcrawl done!");
-                }
-                else if (checkmode == CheckMode.CheckIsDataValidWhenLoginHtmlPartialUpdate)
+
+                 if (checkmode == CheckMode.CheckIsDataValidWhenLoginHtmlPartialUpdate)
                 {
                     Interact("login done!");
+                }
+                else if (checkmode == CheckMode.CheckIsDataValidWhenFphxHtmlPartialUpdate)
+                {
+                    // ui thread
+                    Action<ConfirmView> action = StartAutoChosen;
+                    vw.Dispatcher.Invoke(action, DispatcherPriority.Normal, new object[] {
+                   vw
+                     });
+                    //vw.Dispatcher.Invoke(   new StartCrawlDelegate(StartCrawl), new object[] { vw });
+                    // work thread
+                    Interact("search chosen done!");
                 }
 
             }
@@ -794,8 +602,46 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
         }
 
+         /// <summary>
+         /// 有效数据才能自动翻页
+         /// </summary>
+         /// <param name="doc2"></param>
+         /// <returns></returns>
+        private bool CheckIsDataValidWhenFphxHtmlPartialUpdate(mshtml.IHTMLDocument2 doc2)
+        {
 
+            bool hasValidData = true;
+            mshtml.HTMLTableClass table = IsChoseChecked ? (mshtml.HTMLTableClass)doc2.all.item("example1", 0) : (mshtml.HTMLTableClass)doc2.all.item("example", 0);
+            if (table == null)
+            {
+                hasValidData = false;
+                //throw new InvalidOperationException("无效table");
+            }
+            mshtml.HTMLTableSectionClass tbody = (mshtml.HTMLTableSectionClass)table.lastChild;
+            if (tbody == null)
+            {
+                hasValidData = false;
+                //throw new InvalidOperationException("无效tbody");
+            }
 
+            var tbodyHtml = tbody.innerHTML;
+            //class=dataTables_empty
+            if (0 == string.Compare(tbody.innerText, "没找到记录", StringComparison.InvariantCultureIgnoreCase))
+            {
+                hasValidData = false;
+                //throw new InvalidOperationException("无效tbody");
+            }
+            Lexer lexer = new Lexer(tbodyHtml);
+            hParser.Parser parser = new hParser.Parser(lexer);
+            hParser.NodeFilter filter = new NodeClassFilter(typeof(Winista.Text.HtmlParser.Tags.TableRow));
+            NodeList nodeList = parser.Parse(filter);
+            if (nodeList.Count == 0)
+            {
+                hasValidData = false;
+                // Interact("没有符合要求的节点");
+            }
+            return hasValidData;
+        }
 
         private bool CheckIsDataValidWhenLoginHtmlPartialUpdate(mshtml.IHTMLDocument2 doc2)
         {
@@ -818,50 +664,15 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             return hasValidData;
         }
 
-        private bool CheckIsDataValidWhenFpcxHtmlPartialUpdate(mshtml.IHTMLDocument2 doc2)
-        {
-
-            bool hasValidData = true;
-            mshtml.HTMLTableClass table = IsUnConfirmChecked ? (mshtml.HTMLTableClass)doc2.all.item("example1", 0) : (mshtml.HTMLTableClass)doc2.all.item("example", 0);
-            if (table == null)
-            {
-                hasValidData = false;
-                //throw new InvalidOperationException("无效table");
-            }
-            mshtml.HTMLTableSectionClass tbody = (mshtml.HTMLTableSectionClass)table.lastChild;
-            if (tbody == null)
-            {
-                hasValidData = false;
-                //throw new InvalidOperationException("无效tbody");
-            }
-
-            var tbodyHtml = tbody.innerHTML;
-
-            if (0 == string.Compare(tbody.innerText, "没找到记录", StringComparison.InvariantCultureIgnoreCase))
-            {
-                hasValidData = false;
-                //throw new InvalidOperationException("无效tbody");
-            }
-            Lexer lexer = new Lexer(tbodyHtml);
-            hParser.Parser parser = new hParser.Parser(lexer);
-            hParser.NodeFilter filter = new NodeClassFilter(typeof(Winista.Text.HtmlParser.Tags.TableRow));
-            NodeList nodeList = parser.Parse(filter);
-            if (nodeList.Count == 0)
-            {
-                hasValidData = false;
-                // Interact("没有符合要求的节点");
-            }
-            return hasValidData;
-        }
-
+ 
         private bool _IsLastPage = false;
 
-        public void StartCrawl(CrawlView vw)//  private void BtnDownload_Click(object sender, RoutedEventArgs e)
+        public void StartAutoChosen(ConfirmView vw)//  private void BtnDownload_Click(object sender, RoutedEventArgs e)
         {
-            Uri uri = new Uri(this.TargetUri);
-            Uri uri2 = new Uri(string.Format("{0}#", this.TargetUri));
+            Uri uri = new Uri(this.ChosenUri);
+            Uri uri2 = new Uri(string.Format("{0}#", this.ChosenUri));
 #if DEBUG
-            Interact(string.Format("StartCrawl on Task{0}", Thread.CurrentThread.ManagedThreadId.ToString()));
+            Interact(string.Format("Start Auto Chosen on Task{0}", Thread.CurrentThread.ManagedThreadId.ToString()));
             //this.TipInfo = string.Format("StartCrawl on Task{0}", Thread.CurrentThread.ManagedThreadId.ToString());
 
 #endif  
@@ -910,9 +721,13 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
                 //Debug.WriteLine(html.Html);
 
                 //法2：直接基于WebBrowser，授权是由用户手动实现的
-
-                CrawlCurrentPage(wb, isOffline, IsUnConfirmChecked, ref hasValidData);
-
+                //////////////////////////////////////////////////
+                //////////////////////////////////////////////////
+                //////////////////////////////////////////////////
+                ChosenInCurrentPage(wb, isOffline, IsChoseChecked, ref hasValidData);
+                //////////////////////////////////////////////////
+                //////////////////////////////////////////////////
+                //////////////////////////////////////////////////
                 #endregion
                 if (isOffline)
                 {
@@ -954,7 +769,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
 
 
-        private void CrawlCurrentPage(WebBrowser wb, bool isOffline, bool IsUnConfirmChecked, ref bool hasValidData)
+        private void ChosenInCurrentPage(WebBrowser wb, bool isOffline, bool IsChoseChecked, ref bool hasValidData)
         {
             mshtml.IHTMLDocument2 doc2 = isOffline ? null : (mshtml.IHTMLDocument2)wb.Document;
             string html = isOffline ? s_htmlFake : doc2.body.innerHTML;
@@ -963,13 +778,13 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             Debug.WriteLine(html);
 
 
-            List<ImportInvoiceDTO> list = new List<ImportInvoiceDTO>();
+            List<ImportInvoiceDTO> listFromPage = new List<ImportInvoiceDTO>();
             List<hParser.Tags.TableRow> validRowList = new List<hParser.Tags.TableRow>();
             //this.parseResult = "";
 
             #region  使用IHTMLDocument2提取HTML
 
-            mshtml.HTMLTableClass table = IsUnConfirmChecked ? (mshtml.HTMLTableClass)doc2.all.item("example1", 0) : (mshtml.HTMLTableClass)doc2.all.item("example", 0);
+            mshtml.HTMLTableClass table = IsChoseChecked ? (mshtml.HTMLTableClass)doc2.all.item("example1", 0) : (mshtml.HTMLTableClass)doc2.all.item("example", 0);
             if (table == null)
             {
                 hasValidData = false;
@@ -1062,49 +877,33 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
                     #region 充填有效行
                     if (tagTR != null)
+                    {
                         validRowList.Add(tagTR);
+                    }
                     #endregion
 
                 }
 
-                parserValidTR(validRowList, IsUnConfirmChecked, ref list);
+                ParserValidTR_And_ChosenOrNot(validRowList, IsChoseChecked, ref listFromPage);
+
+                #region listFromPage 用 ChosenUnconfirmedList 筛选， ChosenUnconfirmedList 中存在则将本页的该TR的checkBox自动勾上
+
+                var todoList = (from r in listFromPage
+                                from i in this.ChosenUnconfirmedList.List
+                                where r.InvoiceCode == i.InvoiceCode && r.InvoiceNumber == i.InvoiceNumber
+                                && i.IsConfirmed == "0" && string.IsNullOrEmpty(i.IsChosen)
+                                select r);
+                Debug.WriteLine(todoList);
+
+                #endregion
 
             }
 
             #endregion
-            #region 使用HtmlParser提取HTML
-            /* Lexer lexer = new Lexer(html);
-            hParser.Parser parser = new hParser.Parser(lexer);
-            hParser.NodeFilter filter = new NodeClassFilter(typeof(Winista.Text.HtmlParser.Tags.TableRow));
-            NodeList nodeList = parser.Parse(filter);
-            if (nodeList.Count == 0)
-                Interact("没有符合要求的节点");
-            else
-            {
-                for (int i = 0; i < nodeList.Count; i++)
-                {
-                    //抓取一行
-                    var tagTR = parserTR(nodeList[i]);
-
-                    #region 充填有效行
-                    if (tagTR != null)
-                        validRowList.Add(tagTR);
-                    #endregion
-
-                }
-
-                parserValidTR(validRowList, ref list);
- 
-            }
-           */
-            #endregion
-
-
-
 
             #region 日志 & 导出 & 持久化
 
-            if (list == null || list.Count == 0)
+            if (listFromPage == null || listFromPage.Count == 0)
             {
                 Interact("该页面上没有检测到预期数据");
                 hasValidData = false;
@@ -1112,7 +911,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
             ImportInvoiceListDTO soap = new ImportInvoiceListDTO
             {
-                List = list,
+                List = listFromPage,
                 Result = new ImportInvoiceResultDTO
                 {
                     Message = "CALLBACK",
@@ -1126,10 +925,10 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             {
                 soap.List.ForEach(impinfo =>
                 {
-                    if (IsUnConfirmChecked)
-                        LogHelper.WriteLog(typeof(CrawlView), string.Format("发票代码{0} 发票号码{1} 开票日期{2} 销方税号{3} 金额{4} 税额{5} 来源{6} 发票状态{7} 勾选标志{8} 操作时间{9}", impinfo.InvoiceCode, impinfo.InvoiceNumber, impinfo.CreateDate, impinfo.SalesTaxNumber, impinfo.Amount, impinfo.Tax, impinfo.From, impinfo.Status, impinfo.SelectTag, impinfo.OperationTime));
+                    if (IsChoseChecked)
+                        LogHelper.WriteLog(typeof(ConfirmView), string.Format("发票代码{0} 发票号码{1} 开票日期{2} 销方税号{3} 金额{4} 税额{5} 来源{6} 发票状态{7} 勾选标志{8} 操作时间{9}", impinfo.InvoiceCode, impinfo.InvoiceNumber, impinfo.CreateDate, impinfo.SalesTaxNumber, impinfo.Amount, impinfo.Tax, impinfo.From, impinfo.Status, impinfo.SelectTag, impinfo.OperationTime));
                     else
-                        LogHelper.WriteLog(typeof(CrawlView), string.Format("发票代码{0} 发票号码{1} 开票日期{2} 销方税号{3} 金额{4} 税额{5} 来源{6} 发票状态{7} 确认月份{8}", impinfo.InvoiceCode, impinfo.InvoiceNumber, impinfo.CreateDate, impinfo.SalesTaxNumber, impinfo.Amount, impinfo.Tax, impinfo.From, impinfo.Status, impinfo.SelectTag));
+                        LogHelper.WriteLog(typeof(ConfirmView), string.Format("发票代码{0} 发票号码{1} 开票日期{2} 销方税号{3} 金额{4} 税额{5} 来源{6} 发票状态{7} 确认月份{8}", impinfo.InvoiceCode, impinfo.InvoiceNumber, impinfo.CreateDate, impinfo.SalesTaxNumber, impinfo.Amount, impinfo.Tax, impinfo.From, impinfo.Status, impinfo.SelectTag));
 
                 });
             }
@@ -1209,57 +1008,85 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
 
         #endregion
-
-
-        private void ShowScreen(string name, Type screenType)
-        {
-            var screen = !string.IsNullOrEmpty(name)
-                ? IoC.Get<object>(name)
-                : IoC.GetInstance(screenType, null);
-
-            ((IConductor)Parent).ActivateItem(screen);
-        }
-
+  
 
         public void SetPageURI()
         {
 
             this.StartUri = this.TargetUri;
 
-
         }
 
         #region SOA
 
-        /// <summary>
+        ImportInvoiceListDTO ChosenUnconfirmedList = new ImportInvoiceListDTO { List=new List<ImportInvoiceDTO> (), Result=new ImportInvoiceResultDTO () };
+        private void RPC_GetChosenUnconfirmedList_From_WinSrvHost(ImportInvoiceDTO cond)
+        {
+            ImportInvoiceListDTO list;
+            //ImportInvoiceDTO cond = new ImportInvoiceDTO
+            //{
+            //    IsChosen = "1",
+            //    IsConfirmed = "0",
+
+            //};
+            using (WinSvcHostServiceRef.SyncImportInvoiceServiceClient proxy = new WinSvcHostServiceRef.SyncImportInvoiceServiceClient())
+            {
+                //proxy.FetchListCompleted += Proxy_FetchListCompleted;
+                list= proxy.FetchList(cond);
+  
+            }
+            if (list.Result.Status == -1)
+            {
+                // 修改UI线程
+                Interact(list.Result.Message);
+                App.Current.Shutdown();
+            }
+            if (list.Result.Status == 0)
+            {
+                // 修改UI线程
+                this.TipInfo = string.Format("{0},没有已勾选未确认的进项发票", list.Result.Message);
+                Interact(this.TipInfo);
+                //App.Current.Shutdown();
+            }
+            this.TipInfo = string.Format("{0},RPC:GetChosen UnconfirmedList From WinSrvHost is Completed", list.Result.Message);
+            if (_IsLastPage)
+            {
+                Interact(this.TipInfo);
+            }
+
+           this. ChosenUnconfirmedList= list;
+
+        }
+
+         /// <summary>
         /// FIRE AND FORGOT
         /// </summary>
         /// <param name="soap"></param>
-          private void CallWS(ImportInvoiceListDTO soap)
-          {
-              Task task = new Task(() =>
-              {
-                  using (var factory = new ChannelFactory< Alayaz.SOA.IService. ISyncImportInvoiceService>("*"))
-                  {
-                      var chl = factory.CreateChannel();
-                      soap = chl.InjectList(soap);
+        private void CallWS(ImportInvoiceListDTO soap)
+        {
+            Task task = new Task(() =>
+            {
+                using (var factory = new ChannelFactory<Alayaz.SOA.IService.ISyncImportInvoiceService>("*"))
+                {
+                    var chl = factory.CreateChannel();
+                    soap = chl.InjectList(soap);
 
-                      if (soap.Result.Status == 0)
-                      {
+                    if (soap.Result.Status == 0)
+                    {
                           //重试
                           soap = chl.InjectList(soap);
-                      }
-                  }
+                    }
+                }
 
-                  if (soap.Result.Status == -1)
-                  {
+                if (soap.Result.Status == -1)
+                {
                       // 修改UI线程
                       // Interact(soap.Result.Message);
                   }
 
-              }, TaskCreationOptions.LongRunning);
-              task.Start();
-          } 
+            }, TaskCreationOptions.LongRunning);
+            task.Start();
+        }
 
         private void CallWsEAP_From_WinSrvHost(ImportInvoiceListDTO soap)
         {
@@ -1292,8 +1119,6 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             }
 
         }
-
-
 
         private void CallWsEAP(ImportInvoiceListDTO soap)
         {
@@ -1329,7 +1154,6 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
         }
 
-
         public void CallSOATest()
         {
             jaxws.users usr = new jaxws.users
@@ -1346,7 +1170,6 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             }
 
         }
-
 
         #endregion
 
@@ -1421,51 +1244,61 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             return isValid ? tagTR : null;
         }
 
-
-        private void parserValidTR(List<hParser.Tags.TableRow> validRowList, bool IsUnConfirmChecked, ref List<ImportInvoiceDTO> list)
+        /// <summary>
+        /// per page
+        /// </summary>
+        /// <param name="validRowList"></param>
+        /// <param name="IsChoseChecked"></param>
+        /// <param name="list"></param>
+        private void ParserValidTR_And_ChosenOrNot(List<hParser.Tags.TableRow> validRowList, bool IsChoseChecked, ref List<ImportInvoiceDTO> list)
         {
             for (int j = 0; j < validRowList.Count; j++)
             {
                 ImportInvoiceDTO dto = new ImportInvoiceDTO();
                 dto.TaxCode = this.TaxCode;
+               
                 hParser.Tags.TableRow tagTR = validRowList[j];
-                if (IsUnConfirmChecked)
-                {//未确认（抵扣）
+                 
                     //抓取td
+                    //fphx查处的都是未确认的
                     for (int i = 0; i < tagTR.Columns.Count(); i++)
                     {
                         var colum = tagTR.Columns[i] as hParser.Tags.TableColumn; //td
 
                         switch (i)
                         {
-                            case 0:
-                                dto.InvoiceCode = colum.StringText;
-                                break;
-                            case 1:
+                        case 0:
+                            var isTrChosen= colum.StringText.Contains("CHECKED")|| colum.StringText.Contains("checked");
+                            dto.IsChosen = isTrChosen ? "1" : "0";
+                            break;
+                        case 1:
+                            dto.InvoiceCode = colum.StringText;
+                            break;
+                        case 2:
                                 dto.InvoiceNumber = colum.StringText;
                                 break;
-                            case 2:
+                            case 3:
                                 dto.CreateDate = colum.StringText;
                                 break;
-                            case 3:
+                            case 4:
                                 dto.SalesTaxNumber = colum.StringText;
                                 break;
-                            case 4:
+                            case 5:
                                 dto.Amount = ConvertToDecimal(colum.StringText);
                                 break;
-                            case 5:
+                            case 6:
                                 dto.Tax = ConvertToDecimal(colum.StringText);
                                 break;
-                            case 6:
+                            case 7:
                                 dto.From = colum.StringText;
                                 break;
-                            case 7:
+                            case 8:
                                 dto.Status = colum.StringText;
                                 break;
-                            case 8:
+                            case 9:
                                 dto.SelectTag = colum.StringText;//勾选状态
                                 break;
-                            case 9:
+                            case 10:
                                 dto.OperationTime = colum.StringText;//勾选时间
                                 break;
                         }
@@ -1475,52 +1308,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
                         //+ " StartPosition:" + colum.StartPosition.ToString() + " EndPosition:" + colum.EndPosition.ToString() + "\r\n";
                     }
                     dto.DeductionStatus = "2";
-                }
-                else
-                {//已确认（抵扣）
-                    //抓取td
-                    for (int i = 0; i < tagTR.Columns.Count(); i++)
-                    {
-                        var colum = tagTR.Columns[i] as hParser.Tags.TableColumn; //td
-
-                        switch (i)
-                        {
-                            case 0:
-                                dto.InvoiceCode = colum.StringText;
-                                break;
-                            case 1:
-                                dto.InvoiceNumber = colum.StringText;
-                                break;
-                            case 2:
-                                dto.CreateDate = colum.StringText;
-                                break;
-                            case 3:
-                                dto.SalesTaxNumber = colum.StringText;
-                                break;
-                            case 4:
-                                dto.Amount = ConvertToDecimal(colum.StringText);
-                                break;
-                            case 5:
-                                dto.Tax = ConvertToDecimal(colum.StringText);
-                                break;
-                            case 6:
-                                dto.From = colum.StringText;
-                                break;
-                            case 7:
-                                dto.Status = colum.StringText;
-                                break;
-                            case 8:
-                                dto.SelectTag = colum.StringText; //确认月份
-                                break;
-
-                        }
-
-
-                        //      parseResult += colum.TagName + ":\r\nStringText:" + colum.StringText + " ChildrenHTML:" + colum.ChildrenHTML
-                        //+ " StartPosition:" + colum.StartPosition.ToString() + " EndPosition:" + colum.EndPosition.ToString() + "\r\n";
-                    }
-                    dto.DeductionStatus = "1";
-                }
+              
                 list.Add(dto);
             }
         }
@@ -1732,7 +1520,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             {
                 msg += " \n确认后助手程序将自动关闭";
                 // 写登录失败日志
-                LogHelper.WriteLog(typeof(CrawlView), string.Format("登录失败:{0} | TaxCode:{1}", msg, GlobalData.TaxCode));
+                LogHelper.WriteLog(typeof(ConfirmView), string.Format("登录失败:{0} | TaxCode:{1}", msg, GlobalData.TaxCode));
                 Interact(string.Format("5次登录失败将导致金税盘/税控盘锁死，请检查您的密码配置（DeviceKey）{0}", msg));
                 App.Current.Shutdown();
             }
@@ -1741,7 +1529,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
                 )
             {
                 msg += " \n确认后助手程序将自动关闭";
-                LogHelper.WriteLog(typeof(CrawlView), string.Format("Network/Session invalid:{0} | TaxCode:{1}", msg, GlobalData.TaxCode));
+                LogHelper.WriteLog(typeof(ConfirmView), string.Format("Network/Session invalid:{0} | TaxCode:{1}", msg, GlobalData.TaxCode));
                 Interact(msg);
                 App.Current.Shutdown();
             }
@@ -1749,7 +1537,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
                )
             {
                 msg += ";请确保以证书及驱动已正确安装并以管理员身份执行本程序;\n确认后助手程序将自动关闭";
-                LogHelper.WriteLog(typeof(CrawlView), string.Format("无效的证书、进程权限或设备:{0} | TaxCode:{1}", msg, GlobalData.TaxCode));
+                LogHelper.WriteLog(typeof(ConfirmView), string.Format("无效的证书、进程权限或设备:{0} | TaxCode:{1}", msg, GlobalData.TaxCode));
                 Interact(msg);
                 App.Current.Shutdown();
             }
@@ -1761,22 +1549,4 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
         #endregion
     }
 
-    [System.Runtime.InteropServices.ComVisibleAttribute(true)]//将该类设置为com可访问  
-    public class ECMAScriptListener
-    {
-        public static string alertMessage;
-        public string AlertMessage
-        {
-            get { return alertMessage; }
-            set { alertMessage = value; }
-        }
-
-
-        public void AlertMessageCLR(string str)
-        {
-            this.AlertMessage = str;
-            MessageBox.Show("警告：" + this.AlertMessage);
-        }
-    }
-
-}
+ }

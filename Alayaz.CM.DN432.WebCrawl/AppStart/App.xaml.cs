@@ -19,10 +19,24 @@ namespace Alayaz.CM.DN432.WebCrawl
         [STAThread]
         static void Main(string[] args)
         {
+            if (args.Length < 2)
+            {
+               // 从配置文件取
+                    GlobalData.ImpInvViewModel.BootMode = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("BootMode")) ? "crawl" : ConfigurationManager.AppSettings.Get("BootMode");
+             }
+
             if (args.Length == 2)
             {
                 s_BootArgs = args[1];
-                GlobalData.ImpInvViewModel.BootMode = s_BootArgs;
+
+                if (s_BootArgs == "crawl" || s_BootArgs == "confirm")
+                {//先从启动参数取
+                     GlobalData.ImpInvViewModel.BootMode = s_BootArgs;
+                }
+                else
+                {//再从配置文件取
+                    GlobalData.ImpInvViewModel.BootMode = string.IsNullOrEmpty(ConfigurationManager.AppSettings.Get("BootMode")) ? "crawl" : ConfigurationManager.AppSettings.Get("BootMode");
+                }
                 //MessageBox.Show(s_BootArgs);
             }
             if (args.Length == 4)
@@ -71,6 +85,11 @@ namespace Alayaz.CM.DN432.WebCrawl
             GlobalData.PWD = this.DeviceKey;
             //V3.2先从开票软件取，再从本地配置取
             //TODO
+
+
+
+
+
 
         }
         /*

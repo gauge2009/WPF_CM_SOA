@@ -38,13 +38,7 @@ using Alayaz.CM.DN432.WebCrawl.ServiceProxy;
 
 namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 {
-    public enum CheckMode
-    {
-        CheckIsDataValidWhenLoginHtmlPartialUpdate,
-        CheckIsDataValidWhenFpcxHtmlPartialUpdate,
-
-
-    }
+   
     //  [Export("Crawl", typeof(CrawlViewModel))]
     [Export(typeof(CrawlViewModel))]
     public partial class CrawlViewModel : Screen
@@ -528,9 +522,8 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
                 // CPU轮询
 
-                   Interact("execScript Login()", true);
-  
-
+                   //Interact("exec Login()", true);
+                  Interact("执行-验证()", true);
                 //<N>JR:在UI线程处理轮询会阻塞此LoadCompleted的完成，导致UI阻塞，即使AJAX已经完成也不会更新wb的文档！！！
                 ///必须在工作线程中轮询，然后借助同步上下文更新UI并触发后续工作流！
                 ///
@@ -723,8 +716,9 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
 
 #if DEBUG
-            Interact("execScript searchInfo()", true);
- #endif
+           // Interact("exec searchInfo()", true);
+            Interact("执行-检索()", true);
+#endif
 
             //<N>JR:在UI线程处理轮询会阻塞此LoadCompleted的完成，导致UI阻塞，即使AJAX已经完成也不会更新wb的文档！！！
             //// PollingCheck(vw, doc2);

@@ -15,6 +15,13 @@ namespace Alayaz.SOA.Service.ViewModel
         [DataMember]
         public string Message { get; set; }
 
- 
+        [DataMember]
+        public DateTime Begin { get; set; }
+
+        [DataMember]
+        public DateTime End { get; set; }
+
+
+
     }
 }

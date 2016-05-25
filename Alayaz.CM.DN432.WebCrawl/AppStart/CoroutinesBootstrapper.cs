@@ -76,8 +76,19 @@ namespace Alayaz.CM.DN432.WebCrawl
             GlobalData.MefContainer.SatisfyImportsOnce(instance);
         }
 
-        protected override void OnStartup(object sender, System.Windows.StartupEventArgs e) {
-            DisplayRootViewFor<IShell>();
+        protected override void OnStartup(object sender, System.Windows.StartupEventArgs e)
+        {
+
+            if (string.IsNullOrEmpty(GlobalData.ImpInvViewModel.BootMode) || GlobalData.ImpInvViewModel.BootMode.ToLower() == "crawl")
+            {
+                DisplayRootViewFor<IShell>();
+
+            }
+            else if (GlobalData.ImpInvViewModel.BootMode.ToLower() == "confirm")
+            {
+                DisplayRootViewFor<IConfirmShell>();
+
+            }
         }
 
 

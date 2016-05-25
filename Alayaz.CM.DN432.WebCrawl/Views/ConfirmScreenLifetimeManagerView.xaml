@@ -3,10 +3,10 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:cal="http://www.caliburnproject.org"  
-        xmlns:Custom="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell" x:Class="Alayaz.CM.DN432.WebCrawl.Views.ScreenLifetimeManagerView"  
+        xmlns:Custom="http://schemas.microsoft.com/winfx/2006/xaml/presentation/shell" x:Class="Alayaz.CM.DN432.WebCrawl.Views.ConfirmScreenLifetimeManagerView"  
         Title="{Binding WindowTitle}"
         Icon="/Alayaz.CM.DN432.WebCrawl;component/imgs/user.png"
-        Width="500" Height="100" 
+        Width="1050" Height="700" 
                    >
     <!--  Width="{Binding WidthVal}" Height="{Binding HeightVal}" 
     Style="{DynamicResource AlayazStyleWindowStyle}"  
