@@ -411,12 +411,17 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
                     default:
                     case "DB":
                         //RPC取值
+                        var now = DateTime.Now;
                         ImportInvoiceDTO cond = new ImportInvoiceDTO
                         {
                             IsChosen = "1",
                             IsConfirmed = "0",
 
-                        };
+                            BeginDateTime = now.AddMonths(-1),
+                            EndDateTime = now.AddDays(2),
+                             TaxCode = this.TaxCode
+                             
+                         };
                         RPC_GetChosenUnconfirmedList_From_WinSrvHost(cond);
 
                         DealWithDate(  this.ChosenUnconfirmedList );
@@ -761,8 +766,8 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             {
                 this.IsBusy = false;
                 //  wb.Visibility = Visibility.Visible;
-                Interact("所有数据已同步完成");
-                App.Current.Shutdown();
+                Interact("所有数据已反向同步完成");
+              //////////////////  App.Current.Shutdown();
             }
 
         }
@@ -784,7 +789,8 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
             #region  使用IHTMLDocument2提取HTML
 
-            mshtml.HTMLTableClass table = IsChoseChecked ? (mshtml.HTMLTableClass)doc2.all.item("example1", 0) : (mshtml.HTMLTableClass)doc2.all.item("example", 0);
+            //mshtml.HTMLTableClass table = IsChoseChecked ? (mshtml.HTMLTableClass)doc2.all.item("example1", 0) : (mshtml.HTMLTableClass)doc2.all.item("example", 0);
+            mshtml.HTMLTableClass table =   (mshtml.HTMLTableClass)doc2.all.item("example", 0);
             if (table == null)
             {
                 hasValidData = false;
@@ -891,9 +897,17 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
                 var todoList = (from r in listFromPage
                                 from i in this.ChosenUnconfirmedList.List
                                 where r.InvoiceCode == i.InvoiceCode && r.InvoiceNumber == i.InvoiceNumber
-                                && i.IsConfirmed == "0" && string.IsNullOrEmpty(i.IsChosen)
-                                select r);
+                                && i.IsConfirmed == "0" && !string.IsNullOrEmpty(i.IsChosen)
+                                select r).ToList();
                 Debug.WriteLine(todoList);
+
+                // mshtml.HTMLTableSectionClass tbody
+                if (todoList != null && todoList.Count > 0)
+                {
+                    CheckInCurrentPage(doc2, todoList);
+
+                }
+
 
                 #endregion
 
@@ -933,35 +947,98 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
                 });
             }
             #endregion
-            if (this.IfCallWS == "1")
-            {
-                /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                switch (this.SoapMode) {
-                    case "IISATV":
-                        CallWS(soap);
-                        break;
-                    case "IIS":
-                        CallWsEAP(soap);
-                        break;
-                    default:
-                    case "WINSVC":
-                        CallWsEAP_From_WinSrvHost(soap);
-                        break;
+            //if (this.IfCallWS == "1")
+            //{
+            //    /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+            //    /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+            //    /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+            //    /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+            //    switch (this.SoapMode) {
+            //        case "IISATV":
+            //            CallWS(soap);
+            //            break;
+            //        case "IIS":
+            //            CallWsEAP(soap);
+            //            break;
+            //        default:
+            //        case "WINSVC":
+            //            CallWsEAP_From_WinSrvHost(soap);
+            //            break;
 
-                }               
-                /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-                /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
-            }
-            Debug.Write("本页已同步完成，请点击下一页继续同步");
+            //    }               
+            //    /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+            //    /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+            //    /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+            //    /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+            //}
+            Debug.Write("本页已反向同步完成，请点击下一页继续同步");
             //FakeBusy();
 
             #endregion
         }
+
+        /// <summary>
+        /// 基于当前页的todoList注入本地脚本实现勾选！
+        /// </summary>
+        /// <param name="tbody"></param>
+        /// <param name="todoList"></param>
+        private void CheckInCurrentPage(mshtml.IHTMLDocument2 doc2, List<ImportInvoiceDTO> todoList)
+        {
+            mshtml.HTMLTableClass table = (mshtml.HTMLTableClass)doc2.all.item("example", 0);
+            if (table == null)
+            {
+                 return;
+            }
+            mshtml.HTMLTableSectionClass tbody = (mshtml.HTMLTableSectionClass)table.lastChild;
+            if (tbody == null)
+            {
+                return;
+            }
+
+            var tbodyHtml = tbody.innerHTML;
+
+            var rows = tbody.rows;
+          
+
+
+            foreach (var todo in todoList)
+            {
+                //mshtml.IHTMLElement login_header = (mshtml.IHTMLElement)doc2.all.item("login_header", 0);
+                // if (login_header != null)
+                //{
+                //     login_header.setAttribute("style", "display: none;");
+                //    // login_header.innerHTML = "";
+                //}
+
+                foreach (var row in rows)
+                {
+                    var tr = (mshtml.HTMLTableRowClass)row;
+                    if (tr.innerHTML.Contains(todo.InvoiceCode)&& tr.innerHTML.Contains(todo.InvoiceNumber)){
+                        var td1st = (mshtml.HTMLTableCellClass)tr.firstChild;
+                        //tr.firstChild.hasChildNodes()
+                        if (td1st != null && td1st.hasChildNodes())
+                        {
+                            // I LIKE  mshtml.IHTMLElementCollection , JUST LIKE doc2.all !!
+                            mshtml.IHTMLElementCollection elementCollection = (mshtml.IHTMLElementCollection)td1st.getElementsByTagName("INPUT");//.item("checkbox1", 0);
+                            if (elementCollection != null && elementCollection.length > 0)
+                            {
+                                mshtml.IHTMLElement checkbox = (mshtml.IHTMLElement)elementCollection.item("checkbox1",0);
+                                checkbox.setAttribute("checked", "true");
+                            }
+
+ 
+                        }
+
+                    }
+
+                  }
+
+
+            }
+
+
+        }
+
 
         private bool GotoNextPage(WebBrowser wb, bool isLastPage)
         {
@@ -969,13 +1046,13 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             // string html =  doc2.body.innerHTML;
             var currentUrl = wb.Source.AbsoluteUri;
             currentUrl = currentUrl.Replace("#", "");
-            if (currentUrl == this.TargetUri)
+            if (currentUrl == this.ChosenUri)
             {
-                mshtml.IHTMLElement example1_next = (mshtml.IHTMLElement)doc2.all.item("example1_next", 0);
-                example1_next.click();
+                mshtml.IHTMLElement example_next = (mshtml.IHTMLElement)doc2.all.item("example_next", 0);
+                example_next.click();
 
                 int pageCounter = 0;
-                var pagenumStr = example1_next.getAttribute("data-dt-idx");
+                var pagenumStr = example_next.getAttribute("data-dt-idx");
                 if (!int.TryParse(pagenumStr.ToString(), out pageCounter))
                 {
                     Interact(string.Format("翻页失败，请手工执行"));
@@ -983,10 +1060,10 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
 
                 //边界条件
-                var classstr = example1_next.getAttribute("class");
+                var classstr = example_next.getAttribute("class");
                 if (classstr == null)
                 {
-                    Interact(string.Format("example1_next miss {0} attr,请手工点击[下一页]", "class"));
+                    Interact(string.Format("example_next miss {0} attr,请手工点击[下一页]", "class"));
                 }
                 else
                 {

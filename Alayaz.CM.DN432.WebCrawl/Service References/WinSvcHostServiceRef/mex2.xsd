@@ -16,10 +16,12 @@
   <xs:complexType name="ImportInvoiceDTO">
     <xs:sequence>
       <xs:element minOccurs="0" name="Amount" type="xs:decimal" />
+      <xs:element minOccurs="0" name="BeginDateTime" nillable="true" type="xs:dateTime" />
       <xs:element minOccurs="0" name="CertificateStatus" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CreateDate" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="CreateDateTime" type="xs:dateTime" />
       <xs:element minOccurs="0" name="DeductionStatus" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EndDateTime" nillable="true" type="xs:dateTime" />
       <xs:element minOccurs="0" name="From" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="InvoiceCode" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="InvoiceNumber" nillable="true" type="xs:string" />

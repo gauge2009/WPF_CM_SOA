@@ -177,7 +177,20 @@ namespace Alayaz.SOA.Service.ViewModel
             get;
             set;
         }
-
+        /// </summary>
+        [DataMember]
+        public DateTime? BeginDateTime
+        {
+            get;
+            set;
+        }
+        /// </summary>
+        [DataMember]
+        public DateTime? EndDateTime
+        {
+            get;
+            set;
+        }
 
 
 

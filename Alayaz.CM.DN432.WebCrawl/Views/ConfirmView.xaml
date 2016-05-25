@@ -121,7 +121,7 @@
                        cm:Message.Attach="[Event Loaded]= [Action InitSource($source,$view)];[Event LoadCompleted]= [Action LoadCompletedHandler($eventArgs,$view,$source)];[Event Navigating]=[Action NavigatingHandler($eventArgs,$view,$source)];[Event SourceUpdated]=[Action SourceUpdatedHandler($eventArgs,$view,$source)]"
                         />
 
-        <Button  Name="Chose"  Content="同步勾选状态" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center"  
+        <Button  Name="Chose" Visibility="Hidden"  Content="同步勾选状态" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center"  
                   cm:Message.Attach="[Event Click]= [Action AutoCrawl($view,$source)]" Background="#FF1B8EC7" Style="{DynamicResource AlayazButton}"   Width="135" Height="35"/>
         
         <ProgressBar Name="ProgBar"  Background="White"  Width="700" Height="25" Grid.Row="3" Grid.ColumnSpan="3" RenderTransformOrigin="0.5,0.5"   >

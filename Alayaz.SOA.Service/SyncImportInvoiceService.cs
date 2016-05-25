@@ -160,7 +160,7 @@ namespace Alayaz.SOA.Service
                      !string.IsNullOrEmpty(condition.InvoiceCode) ? o.FPDM == condition.InvoiceCode : true
                         &&
                      !string.IsNullOrEmpty(condition.InvoiceNumber) ? o.FPDM == condition.InvoiceNumber : true
-
+                           
                         );
 
                     //if (!string.IsNullOrEmpty(condition.IsChosen))
@@ -173,19 +173,32 @@ namespace Alayaz.SOA.Service
                     //    datas = datas.Where(o => o.QRBZ == condition.IsConfirmed);
 
                     //}
+
+                    if ( condition.BeginDateTime.HasValue)
+                    {
+                        datas = datas.Where(o => o.KPRQ >= condition.BeginDateTime.Value);
+                    }
+                    if (condition.EndDateTime.HasValue)
+                    {
+                        datas = datas.Where(o => o.KPRQ <= condition.EndDateTime.Value);
+                    }
+                    if (!string.IsNullOrEmpty(condition.TaxCode))
+                    {
+                        datas = datas.Where(o => o.GFSH == condition.TaxCode);
+
+                    }
                     // var data = datas.OrderByDescending(o => o.KPRQ).DoPage(condition.Pager).ToList();
                     var data = datas.Select(o => new ImportInvoiceDTO
                     {
                         InvoiceCode = o.FPDM,
                         InvoiceNumber = o.FPHM,
-                        // CreateDate = o.KPRQ.ToString(),
                         Amount = o.FPJE,
                         Tax = o.FPSE,
                         SalesTaxNumber = o.XFSH,
                         //IsChosen = o.GSBZ,
                         //IsConfirmed == o.QRBZ,
                         CreateDateTime = o.KPRQ,
-                        CreateDate = o.KPRQ.ToString("yyyy-MM-dd"),
+                        //CreateDate = o.KPRQ.ToString("yyyy-MM-dd"),//"LINQ to Entities 不识别方法“System.String ToString(System.String)”，因此该方法无法转换为存储表达式。"
                         IsChosen = "1",
                         IsConfirmed = "0"
 

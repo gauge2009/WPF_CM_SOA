@@ -294,6 +294,8 @@
     <Content Include="Axure\cookies.js" />
     <Content Include="Axure\crypt.js" />
     <Content Include="Axure\demo.js" />
+    <Content Include="Axure\fphx-afterPost.html" />
+    <Content Include="Axure\fphx.html" />
     <Content Include="Axure\fpcx-afterPost.html" />
     <Content Include="Axure\fpcx.html" />
     <Content Include="Axure\Index_popup_message.html" />
