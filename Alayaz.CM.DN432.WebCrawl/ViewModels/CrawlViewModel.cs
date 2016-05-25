@@ -1293,7 +1293,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
             this.TipInfo = string.Format("{0},所有数据已同步完成", rs.Result.Message);
             if (_IsLastPage)
             {
-                Interact("所有同步任务已完成，确认后将关闭软件");
+                Interact("异步数据持久化完成回调成功，确认后将关闭软件");
                 App.Current.Shutdown();
             }
 
