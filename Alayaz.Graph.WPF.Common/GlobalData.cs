@@ -17,6 +17,10 @@ namespace Alayaz.Graph.WPF.Common
 
     public class ImpInvViewModel
     {
+        /// <summary>
+        /// 启动模式
+        /// </summary>
+        public string BootMode { get; set; }
         public string PWD { get; set; }
         public string TaxCode { get; set; }
         public string Begin { get; set; }

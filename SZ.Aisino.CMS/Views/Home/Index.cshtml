@@ -44,8 +44,13 @@
             //var uri = o.GetUrl + "/?appName=&param=crawl";
             var ls = {
                 appName: '',
-                param: 'crawl'
-            };
+                param: 'crawl',  //crawl  /  confirm
+                TaxCode: '4403...',
+                PWD: '12345678',
+                Begin: '2016-05-24',
+                End: '2016-05-25',
+                Url: 'fpdk.szgs.gov.cn', //  
+        };
             $.ajax({
                 url: o.GetUrl,
                 cache:false,

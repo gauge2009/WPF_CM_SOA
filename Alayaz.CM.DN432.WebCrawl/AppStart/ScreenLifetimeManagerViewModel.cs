@@ -9,9 +9,9 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
     //public class ShellViewModel : Screen, IShell
     [Export(typeof(IShell))]
     public class ScreenLifetimeManagerViewModel : Conductor<object>, IShell
-     {
-       readonly CrawlViewModel screen1;
-       readonly LoginViewModel screen2;
+    {
+        readonly CrawlViewModel screen1;
+        readonly LoginViewModel screen2;
         readonly Screen initialialScreen;
         readonly Stack<object> previous = new Stack<object>();
         bool goingBack;
@@ -22,6 +22,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
 
             this.initialialScreen = !string.IsNullOrEmpty(GlobalData.PWD) ? (Screen)screen1 : (Screen)screen2;
 
+          //  GlobalData.ImpInvViewModel.BootMode
         }
 
         private string windowTitle;
@@ -45,9 +46,9 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
         /// </summary>
         protected override void OnInitialize()
         {
-             ActivateItem(initialialScreen);
+            ActivateItem(initialialScreen);
 
-           // new MainWindow().ShowDialog();
+            // new MainWindow().ShowDialog();
             base.OnInitialize();
         }
 
@@ -62,7 +63,7 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
         }
 
         //WindowTitle
-  
+
 
         public void GoBack()
         {

@@ -22,7 +22,7 @@ namespace Alayaz.CM.DN432.WebCrawl
             if (args.Length == 2)
             {
                 s_BootArgs = args[1];
-
+                GlobalData.ImpInvViewModel.BootMode = s_BootArgs;
                 //MessageBox.Show(s_BootArgs);
             }
             if (args.Length == 4)
