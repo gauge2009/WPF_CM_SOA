@@ -291,7 +291,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Axure\0525\Index.html" />
+    <Content Include="Axure\0525\Index-new.html" />
     <Content Include="Axure\common.js" />
     <Content Include="Axure\cookies.js" />
     <Content Include="Axure\crypt.js" />

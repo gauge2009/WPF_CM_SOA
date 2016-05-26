@@ -370,10 +370,11 @@ namespace Alayaz.CM.DN432.WebCrawl.ViewModels
                     Interact("检测到您输入的密码与惯常使用的密码不一致，登录失败");
                     ShowScreen("", typeof(LoginViewModel));
                 }
-                win.execScript(string.Format("Login('{0}', '', 1)", GlobalData.PWD), "javascript");
+              win.execScript(string.Format("Login('{0}', '', 1)", GlobalData.PWD), "javascript");
+                //  win.execScript(string.Format("Login('{0}', '')", GlobalData.PWD), "javascript");
 
                 // CPU轮询
-                   Interact("execScript Login()", true);
+                Interact("execScript Login()", true);
 
                 //<N>JR:在UI线程处理轮询会阻塞此LoadCompleted的完成，导致UI阻塞，即使AJAX已经完成也不会更新wb的文档！！！
                 ///必须在工作线程中轮询，然后借助同步上下文更新UI并触发后续工作流！
